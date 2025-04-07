@@ -8,8 +8,8 @@ function loadCategories() {
         .then((data) => displayCategories(data.categories))
 }
 
-function loadVideos() {
-    fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
+function loadVideos(searchText = "") {
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`)
         .then((response) => response.json())
         .then((data) => {
             removeActiveClass();
@@ -36,15 +36,15 @@ const loadCategoryVideos = (id) => {
 
             const clickButton = document.getElementById(`btn-${id}`);
             clickButton.classList.add('active');
-            displayVideos(data.category) 
+            displayVideos(data.category)
         })
 }
 
-const loadVideoDetails = (videoId) =>{
+const loadVideoDetails = (videoId) => {
     const url = `https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`;
     fetch(url)
-    .then((res) => res.json())
-    .then((data) => displayVideoDetails(data.video))
+        .then((res) => res.json())
+        .then((data) => displayVideoDetails(data.video))
 }
 
 const displayVideoDetails = (video) => {
@@ -118,7 +118,10 @@ const displayVideos = (videos) => {
                </div>
                 <div class="space-y-1">
                     <h2 class="card-title text-xl font-semibold">${video.title}</h2>
-                    <p class="text-sm text-gray-400">${video.authors[0].profile_name}</p>
+                    <p class="text-sm text-gray-400">${video.authors[0].profile_name}
+                    ${video.authors[0].verified == true ? `<i class="fa-regular fa-circle-check"></i>` : ` `}
+                    
+                    </p>
                     <p class="text-sm text-gray-400">${video.others.views}views</p>
                 </div>
             </div>
@@ -132,6 +135,11 @@ const displayVideos = (videos) => {
 
 }
 
+document.getElementById('search-box').addEventListener('keyup', (event)=>{
+    const input = event.target.value;
+    loadVideos(input);
+
+})
 
 loadCategories()
 
